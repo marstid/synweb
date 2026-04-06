@@ -2,6 +2,7 @@ package server
 
 import (
 	"context"
+	"fmt"
 
 	"github.com/mark3labs/mcp-go/mcp"
 	"github.com/mark3labs/mcp-go/server"
@@ -33,11 +34,11 @@ func New(name string, log *logger.Logger, cfg *config.Config, handler *search.Ha
 		),
 		mcp.WithNumber("max_text_length",
 			mcp.DefaultNumber(float64(cfg.MaxTextLength)),
-			mcp.Description("Maximum number of characters to include in the 'text' field of each result. Defaults to 1000. Set higher if more detail is needed, or fetch the source URL directly for the full content."),
+			mcp.Description(fmt.Sprintf("Maximum number of characters to include in the 'text' field of each result. Defaults to %d. Set higher if more detail is needed, or fetch the source URL directly for the full content.", cfg.MaxTextLength)),
 		),
 		mcp.WithNumber("max_results",
 			mcp.DefaultNumber(float64(cfg.MaxResults)),
-			mcp.Description("Maximum number of results to return. Defaults to 15."),
+			mcp.Description(fmt.Sprintf("Maximum number of results to return. Defaults to %d.", cfg.MaxResults)),
 		),
 	)
 
