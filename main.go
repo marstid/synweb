@@ -27,11 +27,11 @@ func main() {
 
 	log := logger.New(cfg.LogLevel)
 
-	log.Info("Starting synweb MCP server", "version", "0.0.1")
+	log.Info("Starting synweb MCP server")
 
 	client := search.NewClient(cfg.APIBaseURL, cfg.SyntheticAPIKey, log)
-	handler := search.NewHandler(client, log)
-	srv := server.New("synweb", "0.0.1", log, handler)
+	handler := search.NewHandler(client, log, cfg.MaxTextLength, cfg.MaxResults)
+	srv := server.New("synweb", log, cfg, handler)
 
 	if err := srv.Run(ctx); err != nil {
 		log.Error("Server error", "error", err)

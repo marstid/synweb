@@ -10,14 +10,18 @@ import (
 )
 
 type Handler struct {
-	client *Client
-	logger *logger.Logger
+	client        *Client
+	logger        *logger.Logger
+	maxTextLength int
+	maxResults    int
 }
 
-func NewHandler(client *Client, log *logger.Logger) *Handler {
+func NewHandler(client *Client, log *logger.Logger, maxTextLength int, maxResults int) *Handler {
 	return &Handler{
-		client: client,
-		logger: log,
+		client:        client,
+		logger:        log,
+		maxTextLength: maxTextLength,
+		maxResults:    maxResults,
 	}
 }
 
@@ -28,11 +32,13 @@ func (h *Handler) HandleSearch(ctx context.Context, request mcp.CallToolRequest)
 		return mcp.NewToolResultError("Query parameter is required"), nil
 	}
 
-	maxTextLength := request.GetFloat("max_text_length", 1000)
+	maxTextLength := request.GetFloat("max_text_length", float64(h.maxTextLength))
+	maxResults := request.GetFloat("max_results", float64(h.maxResults))
 
 	params := &SearchParams{
 		Query:         query,
 		MaxTextLength: int(maxTextLength),
+		MaxResults:    int(maxResults),
 	}
 
 	h.logger.Info("Processing search request", "query", query)
@@ -46,7 +52,8 @@ func (h *Handler) HandleSearch(ctx context.Context, request mcp.CallToolRequest)
 		return mcp.NewToolResultError("Search failed: " + err.Error()), nil
 	}
 
-	truncatedResponse := h.client.TruncateResults(response, params.MaxTextLength)
+	limitedResponse := h.client.LimitResults(response, params.MaxResults)
+	truncatedResponse := h.client.TruncateResults(limitedResponse, params.MaxTextLength)
 
 	resultJSON, err := json.MarshalIndent(truncatedResponse.Results, "", "  ")
 	if err != nil {

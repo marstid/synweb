@@ -20,12 +20,14 @@ type SearchResult struct {
 type SearchParams struct {
 	Query         string
 	MaxTextLength int
+	MaxResults    int
 }
 
 func DefaultSearchParams() *SearchParams {
 	return &SearchParams{
 		Query:         "",
 		MaxTextLength: 1000,
+		MaxResults:    15,
 	}
 }
 

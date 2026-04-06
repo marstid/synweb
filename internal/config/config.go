@@ -10,6 +10,8 @@ type Config struct {
 	SyntheticAPIKey string `envconfig:"SYNTHETIC_API_KEY" required:"true"`
 	LogLevel        string `envconfig:"LOG_LEVEL" default:"info"`
 	APIBaseURL      string `envconfig:"API_BASE_URL" default:"https://api.synthetic.new/v2"`
+	MaxTextLength   int    `envconfig:"MAX_TEXT_LENGTH" default:"1000"`
+	MaxResults      int    `envconfig:"MAX_RESULTS" default:"15"`
 }
 
 func Load() (*Config, error) {

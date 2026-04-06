@@ -128,3 +128,11 @@ func (c *Client) TruncateResults(resp *SearchResponse, maxLength int) *SearchRes
 
 	return &SearchResponse{Results: truncated}
 }
+
+func (c *Client) LimitResults(resp *SearchResponse, maxResults int) *SearchResponse {
+	if maxResults <= 0 || len(resp.Results) <= maxResults {
+		return resp
+	}
+
+	return &SearchResponse{Results: resp.Results[:maxResults]}
+}

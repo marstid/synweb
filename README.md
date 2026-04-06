@@ -53,6 +53,8 @@ cp .env.example .env
 | `SYNTHETIC_API_KEY` | Your Synthetic API key | (required) |
 | `LOG_LEVEL` | Logging level (debug, info, warn, error) | `info` |
 | `API_BASE_URL` | Synthetic API endpoint | `https://api.synthetic.new/v2` |
+| `MAX_TEXT_LENGTH` | Default max characters in result text | `1000` |
+| `MAX_RESULTS` | Default max number of results | `15` |
 
 ## Usage
 

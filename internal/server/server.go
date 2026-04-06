@@ -5,6 +5,7 @@ import (
 
 	"github.com/mark3labs/mcp-go/mcp"
 	"github.com/mark3labs/mcp-go/server"
+	"github.com/marstid/synweb/internal/config"
 	"github.com/marstid/synweb/internal/logger"
 	"github.com/marstid/synweb/internal/search"
 )
@@ -12,12 +13,13 @@ import (
 type Server struct {
 	mcpServer *server.MCPServer
 	logger    *logger.Logger
+	cfg       *config.Config
 }
 
-func New(name, version string, log *logger.Logger, handler *search.Handler) *Server {
+func New(name string, log *logger.Logger, cfg *config.Config, handler *search.Handler) *Server {
 	s := server.NewMCPServer(
 		name,
-		version,
+		"", // version - not used
 		server.WithToolCapabilities(false),
 		server.WithRecovery(),
 	)
@@ -30,8 +32,12 @@ func New(name, version string, log *logger.Logger, handler *search.Handler) *Ser
 			mcp.Description("Search query string"),
 		),
 		mcp.WithNumber("max_text_length",
-			mcp.DefaultNumber(1000),
+			mcp.DefaultNumber(float64(cfg.MaxTextLength)),
 			mcp.Description("Maximum number of characters to include in the 'text' field of each result. Defaults to 1000. Set higher if more detail is needed, or fetch the source URL directly for the full content."),
+		),
+		mcp.WithNumber("max_results",
+			mcp.DefaultNumber(float64(cfg.MaxResults)),
+			mcp.Description("Maximum number of results to return. Defaults to 15."),
 		),
 	)
 
@@ -40,6 +46,7 @@ func New(name, version string, log *logger.Logger, handler *search.Handler) *Ser
 	return &Server{
 		mcpServer: s,
 		logger:    log,
+		cfg:       cfg,
 	}
 }
 
