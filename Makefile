@@ -2,7 +2,7 @@
 
 BINARY_NAME=synweb
 GO_CMD=go
-MAIN_PATH=./cmd/synweb
+MAIN_PATH=.
 
 build:
 	$(GO_CMD) build -o $(BINARY_NAME) $(MAIN_PATH)
