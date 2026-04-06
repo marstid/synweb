@@ -16,12 +16,26 @@ MCP server for Synthetic Web Search API, written in Go.
 
 ## Installation
 
+### Option 1: Install via go install (Recommended)
+
 ```bash
-git clone https://github.com/martinstidelius/synweb.git
+go install github.com/marstid/synweb@latest
+```
+
+This installs the binary to `$GOPATH/bin` (typically `~/go/bin`).
+
+### Option 2: Build from source
+
+```bash
+git clone https://github.com/marstid/synweb.git
 cd synweb
 go mod tidy
 make build
 ```
+
+### Option 3: Development with go run
+
+If you don't want to build/install the binary, you can use `go run` directly in your MCP config (see Opencode Configuration below).
 
 ## Configuration
 
@@ -99,11 +113,15 @@ npx @modelcontextprotocol/inspector ./synweb
 
 To use this MCP server with Opencode, add it to your Opencode configuration file (`~/.config/opencode/opencode.json`):
 
+### Option A: Using installed binary
+
+If you installed with `go install`, the binary is typically at `~/go/bin/synweb`:
+
 ```json
 {
   "mcp": {
     "synweb": {
-      "command": ["/absolute/path/to/synweb"],
+      "command": ["/Users/yourusername/go/bin/synweb"],
       "enabled": true,
       "type": "local",
       "environment": {
@@ -115,13 +133,32 @@ To use this MCP server with Opencode, add it to your Opencode configuration file
 }
 ```
 
-Replace `/absolute/path/to/synweb` with the actual path to the synweb binary. You can get the path by running:
-
+To find the exact path:
 ```bash
-pwd # if you're in the synweb directory
-# or
-echo "$(pwd)/synweb"
+which synweb
 ```
+
+### Option B: Using go run (no install needed)
+
+If you prefer not to install the binary, use `go run` to run directly:
+
+```json
+{
+  "mcp": {
+    "synweb": {
+      "command": ["go", "run", "github.com/marstid/synweb@latest"],
+      "enabled": true,
+      "type": "local",
+      "environment": {
+        "SYNTHETIC_API_KEY": "your-api-key-here",
+        "LOG_LEVEL": "info"
+      }
+    }
+  }
+}
+```
+
+**Note:** Using `go run` may be slightly slower on first invocation as it needs to download dependencies. However, it will always use the latest release automatically - no need to manually update.
 
 See [Environment Variables](#environment-variables) above for available configuration options.
 
